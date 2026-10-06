@@ -17,8 +17,9 @@ public class MainActivity extends Activity {
         title.setTextSize(32);
         title.setTextColor(Color.WHITE);
         title.setGravity(Gravity.CENTER);
+        title.setBackgroundColor(Color.BLACK);
 
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);
 
         setContentView(title);
