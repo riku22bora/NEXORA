@@ -1,10 +1,13 @@
 package com.nexora.launcher;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -13,7 +16,7 @@ public class NexoraIconView extends FrameLayout {
     private final ImageView iconView;
 
     private int iconSize = 72;
-    private int cornerRadius = 20;
+    private int cornerRadius = 22;
     private int backgroundColor = Color.TRANSPARENT;
     private boolean glowEnabled = false;
 
@@ -22,6 +25,9 @@ public class NexoraIconView extends FrameLayout {
 
         setClipChildren(false);
         setClipToPadding(false);
+
+        setClickable(true);
+        setFocusable(true);
 
         iconView = new ImageView(context);
         iconView.setScaleType(
@@ -35,6 +41,21 @@ public class NexoraIconView extends FrameLayout {
                         iconSize,
                         Gravity.CENTER
                 )
+        );
+
+        setOnTouchListener(
+                (v, event) -> {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        animatePress(0.90f);
+                    } else if (
+                            event.getAction() == MotionEvent.ACTION_UP
+                                    || event.getAction() == MotionEvent.ACTION_CANCEL
+                    ) {
+                        animatePress(1.0f);
+                    }
+
+                    return false;
+                }
         );
     }
 
@@ -98,19 +119,63 @@ public class NexoraIconView extends FrameLayout {
         }
 
         GradientDrawable background =
-                new GradientDrawable();
+                new GradientDrawable(
+                        GradientDrawable.Orientation.TL_BR,
+                        new int[]{
+                                Color.argb(105, 255, 255, 255),
+                                backgroundColor,
+                                Color.argb(35, 255, 255, 255)
+                        }
+                );
 
-        background.setColor(backgroundColor);
         background.setCornerRadius(cornerRadius);
+        background.setStroke(
+                2,
+                Color.argb(145, 255, 255, 255)
+        );
 
         setBackground(background);
     }
 
     private void applyGlow() {
         if (glowEnabled) {
-            setElevation(8f);
+            setElevation(12f);
+            setTranslationZ(4f);
         } else {
             setElevation(0f);
+            setTranslationZ(0f);
         }
+    }
+
+    private void animatePress(float scale) {
+        ObjectAnimator scaleX =
+                ObjectAnimator.ofFloat(
+                        this,
+                        "scaleX",
+                        scale
+                );
+
+        ObjectAnimator scaleY =
+                ObjectAnimator.ofFloat(
+                        this,
+                        "scaleY",
+                        scale
+                );
+
+        ObjectAnimator translationZ =
+                ObjectAnimator.ofFloat(
+                        this,
+                        "translationZ",
+                        scale < 1.0f ? 10f : 4f
+                );
+
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(
+                scaleX,
+                scaleY,
+                translationZ
+        );
+        set.setDuration(130L);
+        set.start();
     }
 }

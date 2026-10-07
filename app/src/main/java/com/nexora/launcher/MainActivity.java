@@ -26,7 +26,7 @@ import java.util.Locale;
 
 public class MainActivity extends Activity {
 
-    private TextView clock;
+    private NexoraClockView clock;
     private TextView date;
     private NexoraAnimatedTextView name;
 
@@ -58,11 +58,7 @@ public class MainActivity extends Activity {
         homeRoot.setBackgroundColor(Color.BLACK);
         homeRoot.setPadding(24, 40, 24, 24);
 
-        clock = new TextView(this);
-        clock.setTextColor(Color.WHITE);
-        clock.setTextSize(48);
-        clock.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        clock.setGravity(Gravity.CENTER);
+        clock = new NexoraClockView(this);
 
         date = new TextView(this);
         date.setTextColor(Color.LTGRAY);
@@ -383,9 +379,12 @@ public class MainActivity extends Activity {
                     app.loadIcon(pm)
             );
 
-            icon.setIconSize(72);
-            icon.setCornerRadius(20);
-            icon.setGlowEnabled(false);
+            icon.setIconSize(68);
+            icon.setCornerRadius(22);
+            icon.setBackgroundColorValue(
+                    Color.argb(42, 255, 255, 255)
+            );
+            icon.setGlowEnabled(true);
 
             TextView appName =
                     new TextView(this);
