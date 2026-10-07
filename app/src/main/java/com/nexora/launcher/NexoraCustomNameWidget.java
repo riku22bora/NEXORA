@@ -297,7 +297,7 @@ public class NexoraCustomNameWidget extends FrameLayout {
     }
 
     public NexoraAnimatedTextView.AnimationMode
-    getAnimation() {
+    getNameAnimation() {
         return animationMode;
     }
 }

@@ -871,7 +871,7 @@ public class MainActivity extends Activity {
                 )
                 .putString(
                         CUSTOM_NAME_ANIMATION,
-                        widget.getAnimation().name()
+                        widget.getNameAnimation().name()
                 )
                 .putFloat(
                         CUSTOM_NAME_X,
@@ -1526,7 +1526,7 @@ public class MainActivity extends Activity {
                 animationAdapter
         );
 
-        switch (widget.getAnimation()) {
+        switch (widget.getNameAnimation()) {
 
             case STATIC:
                 animationSpinner.setSelection(0);
