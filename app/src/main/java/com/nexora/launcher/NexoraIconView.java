@@ -20,7 +20,6 @@ public class NexoraIconView extends FrameLayout {
     public NexoraIconView(Context context) {
         super(context);
 
-        setGravity(Gravity.CENTER);
         setClipChildren(false);
         setClipToPadding(false);
 
