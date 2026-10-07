@@ -16,7 +16,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +24,7 @@ public class MainActivity extends Activity {
 
     private TextView clock;
     private TextView date;
+    private NexoraAnimatedTextView name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,26 @@ public class MainActivity extends Activity {
         date.setTextSize(16);
         date.setGravity(Gravity.CENTER);
         date.setPadding(0, 0, 0, 30);
+
+        name = new NexoraAnimatedTextView(this);
+        name.setText("RIKU");
+        name.setTextSize(20);
+        name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        name.setGravity(Gravity.CENTER);
+        name.setLetterSpacing(0.18f);
+
+        name.setSolidColor(Color.WHITE);
+        name.setGlowColor(Color.rgb(0, 255, 255));
+        name.setGlowRadius(20f);
+        name.setAnimationSpeed(3000L);
+        name.setAnimationMode(
+                NexoraAnimatedTextView.AnimationMode.LIQUID
+        );
+
+        root.addView(name, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                70
+        ));
 
         root.addView(clock, new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
