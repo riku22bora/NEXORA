@@ -11,15 +11,35 @@ public class NexoraClockView extends NexoraAnimatedTextView {
         super(context);
 
         setGravity(Gravity.CENTER);
-        setTextColor(Color.WHITE);
-        setTextSize(52);
-        setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        setLetterSpacing(0.08f);
+        setTextSize(54);
 
-        setSolidColor(Color.WHITE);
-        setGlowColor(Color.rgb(0, 255, 255));
-        setGlowRadius(24f);
-        setAnimationSpeed(2600L);
+        Typeface futuristic =
+                Typeface.create(
+                        "sans-serif-light",
+                        Typeface.NORMAL
+                );
+
+        setTypeface(futuristic);
+        setLetterSpacing(0.12f);
+
+        setSolidColor(Color.rgb(205, 205, 205));
+
+        setGradientColors(
+                new int[]{
+                        Color.rgb(105, 105, 105),
+                        Color.rgb(225, 225, 225),
+                        Color.WHITE,
+                        Color.rgb(225, 225, 225),
+                        Color.rgb(105, 105, 105)
+                }
+        );
+
+        setGlowColor(
+                Color.rgb(150, 150, 150)
+        );
+
+        setGlowRadius(8f);
+        setAnimationSpeed(5200L);
 
         setAnimationMode(
                 NexoraAnimatedTextView.AnimationMode.SHIMMER

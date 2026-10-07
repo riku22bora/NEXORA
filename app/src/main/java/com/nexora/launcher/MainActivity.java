@@ -13,8 +13,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,6 +27,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends Activity {
+
+    private static final int WALLPAPER_PICKER_REQUEST = 1001;
+    private static final String WALLPAPER_PREFS = "nexora_wallpaper";
+    private static final String WALLPAPER_URI = "wallpaper_uri";
+
+    private ImageView wallpaperView;
 
     private NexoraClockView clock;
     private TextView date;
@@ -52,65 +60,195 @@ public class MainActivity extends Activity {
     private void showHomeScreen() {
         drawerRoot = null;
 
+        FrameLayout screenRoot = new FrameLayout(this);
+
+        screenRoot.setBackgroundColor(Color.BLACK);
+        screenRoot.setClipChildren(false);
+        screenRoot.setClipToPadding(false);
+
+        wallpaperView = new ImageView(this);
+
+        wallpaperView.setScaleType(
+                ImageView.ScaleType.CENTER_CROP
+        );
+
+        wallpaperView.setBackgroundColor(
+                Color.rgb(3, 5, 8)
+        );
+
+        loadSavedWallpaper(wallpaperView);
+
+        wallpaperView.setOnLongClickListener(
+                new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        openWallpaperPicker();
+                        return true;
+                    }
+                }
+        );
+
+        screenRoot.addView(
+                wallpaperView,
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                )
+        );
+
+        NexoraLiquidBackgroundView liquidBackground =
+                new NexoraLiquidBackgroundView(this);
+
+        screenRoot.addView(
+                liquidBackground,
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                )
+        );
+
         homeRoot = new LinearLayout(this);
-        homeRoot.setOrientation(LinearLayout.VERTICAL);
-        homeRoot.setGravity(Gravity.CENTER_HORIZONTAL);
-        homeRoot.setBackgroundColor(Color.BLACK);
-        homeRoot.setPadding(24, 40, 24, 24);
+
+        homeRoot.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        homeRoot.setGravity(
+                Gravity.CENTER_HORIZONTAL
+        );
+
+        homeRoot.setBackgroundColor(
+                Color.TRANSPARENT
+        );
+
+        homeRoot.setPadding(
+                24,
+                40,
+                24,
+                24
+        );
+
+        screenRoot.addView(
+                homeRoot,
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                )
+        );
 
         clock = new NexoraClockView(this);
 
         date = new TextView(this);
-        date.setTextColor(Color.LTGRAY);
+
+        date.setTextColor(
+                Color.LTGRAY
+        );
+
         date.setTextSize(16);
-        date.setGravity(Gravity.CENTER);
-        date.setPadding(0, 0, 0, 30);
+
+        date.setGravity(
+                Gravity.CENTER
+        );
+
+        date.setPadding(
+                0,
+                0,
+                0,
+                30
+        );
 
         name = new NexoraAnimatedTextView(this);
-        name.setText("RIKU");
-        name.setTextSize(20);
-        name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        name.setGravity(Gravity.CENTER);
-        name.setLetterSpacing(0.18f);
 
-        name.setSolidColor(Color.WHITE);
-        name.setGlowColor(Color.rgb(0, 255, 255));
-        name.setGlowRadius(20f);
-        name.setAnimationSpeed(3000L);
+        name.setText("RIKU");
+
+        name.setTextSize(20);
+
+        name.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+        );
+
+        name.setGravity(
+                Gravity.CENTER
+        );
+
+        name.setLetterSpacing(
+                0.18f
+        );
+
+        name.setSolidColor(
+                Color.WHITE
+        );
+
+        name.setGlowColor(
+                Color.rgb(0, 255, 255)
+        );
+
+        name.setGlowRadius(
+                20f
+        );
+
+        name.setAnimationSpeed(
+                3000L
+        );
+
         name.setAnimationMode(
                 NexoraAnimatedTextView.AnimationMode.LIQUID
         );
 
-        homeRoot.addView(name, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                70
-        ));
+        homeRoot.addView(
+                name,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        70
+                )
+        );
 
-        homeRoot.addView(clock, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
+        homeRoot.addView(
+                clock,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+        );
 
-        homeRoot.addView(date, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
+        homeRoot.addView(
+                date,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+        );
 
         View spacer = new View(this);
 
-        homeRoot.addView(spacer, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                1
-        ));
+        homeRoot.addView(
+                spacer,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        0,
+                        1
+                )
+        );
 
         Button appDrawerButton = new Button(this);
-        appDrawerButton.setText("ALL APPS");
-        appDrawerButton.setTextColor(Color.WHITE);
-        appDrawerButton.setTextSize(14);
+
+        appDrawerButton.setText("🫆");
+
+        appDrawerButton.setTextColor(
+                Color.rgb(220, 220, 220)
+        );
+
+        appDrawerButton.setTextSize(38);
+
         appDrawerButton.setAllCaps(false);
+
+        appDrawerButton.setGravity(
+                Gravity.CENTER
+        );
+
         appDrawerButton.setBackgroundColor(
-                Color.rgb(25, 25, 25)
+                Color.TRANSPARENT
         );
 
         appDrawerButton.setOnClickListener(
@@ -122,15 +260,114 @@ public class MainActivity extends Activity {
                 }
         );
 
-        homeRoot.addView(appDrawerButton,
+        homeRoot.addView(
+                appDrawerButton,
                 new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        60
-                ));
+                        96,
+                        96
+                )
+        );
 
-        setContentView(homeRoot);
+        setContentView(screenRoot);
 
         updateClock();
+    }
+
+    private void openWallpaperPicker() {
+        Intent intent =
+                new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        intent.addCategory(
+                Intent.CATEGORY_OPENABLE
+        );
+
+        intent.setType("image/*");
+
+        intent.addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+        );
+
+        startActivityForResult(
+                intent,
+                WALLPAPER_PICKER_REQUEST
+        );
+    }
+
+    private void loadSavedWallpaper(ImageView target) {
+        String uriString =
+                getSharedPreferences(
+                        WALLPAPER_PREFS,
+                        MODE_PRIVATE
+                ).getString(
+                        WALLPAPER_URI,
+                        null
+                );
+
+        if (uriString == null) {
+            return;
+        }
+
+        try {
+            target.setImageURI(
+                    android.net.Uri.parse(uriString)
+            );
+        } catch (Exception ignored) {
+            getSharedPreferences(
+                    WALLPAPER_PREFS,
+                    MODE_PRIVATE
+            ).edit()
+                    .remove(WALLPAPER_URI)
+                    .apply();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data
+    ) {
+        super.onActivityResult(
+                requestCode,
+                resultCode,
+                data
+        );
+
+        if (
+                requestCode == WALLPAPER_PICKER_REQUEST
+                        && resultCode == RESULT_OK
+                        && data != null
+                        && data.getData() != null
+        ) {
+            android.net.Uri selectedUri =
+                    data.getData();
+
+            try {
+                getContentResolver()
+                        .takePersistableUriPermission(
+                                selectedUri,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        );
+            } catch (Exception ignored) {
+            }
+
+            getSharedPreferences(
+                    WALLPAPER_PREFS,
+                    MODE_PRIVATE
+            ).edit()
+                    .putString(
+                            WALLPAPER_URI,
+                            selectedUri.toString()
+                    )
+                    .apply();
+
+            if (wallpaperView != null) {
+                wallpaperView.setImageURI(
+                        selectedUri
+                );
+            }
+        }
     }
 
     private void showAppDrawer() {
@@ -417,6 +654,29 @@ public class MainActivity extends Activity {
                             90,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                     )
+            );
+
+            item.setOnTouchListener(
+                    (v, event) -> {
+                        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                            v.animate()
+                                    .scaleX(0.90f)
+                                    .scaleY(0.90f)
+                                    .setDuration(100L)
+                                    .start();
+                        } else if (
+                                event.getAction() == android.view.MotionEvent.ACTION_UP
+                                        || event.getAction() == android.view.MotionEvent.ACTION_CANCEL
+                        ) {
+                            v.animate()
+                                    .scaleX(1.0f)
+                                    .scaleY(1.0f)
+                                    .setDuration(140L)
+                                    .start();
+                        }
+
+                        return false;
+                    }
             );
 
             item.setOnClickListener(
