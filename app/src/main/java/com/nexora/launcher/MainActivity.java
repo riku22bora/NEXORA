@@ -106,20 +106,14 @@ public class MainActivity extends Activity {
         Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
         launcherIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        List<ApplicationInfo> apps =
-                pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        List<android.content.pm.ResolveInfo> launchableApps =
+                pm.queryIntentActivities(
+                        launcherIntent,
+                        PackageManager.MATCH_ALL
+                );
 
-        List<ApplicationInfo> launchableApps = new ArrayList<>();
-
-        for (ApplicationInfo app : apps) {
-            Intent launchIntent = pm.getLaunchIntentForPackage(app.packageName);
-
-            if (launchIntent != null) {
-                launchableApps.add(app);
-            }
-        }
-
-        for (ApplicationInfo app : launchableApps) {
+        for (android.content.pm.ResolveInfo resolveInfo : launchableApps) {
+            ApplicationInfo app = resolveInfo.activityInfo.applicationInfo;
             LinearLayout item = new LinearLayout(this);
             item.setOrientation(LinearLayout.VERTICAL);
             item.setGravity(Gravity.CENTER);
