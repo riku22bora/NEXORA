@@ -1039,7 +1039,8 @@ public class MainActivity extends Activity {
                                                 savedY,
                                                 maxY
                                         )
-                                );
+                                )
+                        );
                     }
                 }
         );
@@ -1284,7 +1285,8 @@ public class MainActivity extends Activity {
                                                     255,
                                                     255,
                                                     255
-                                            );
+                                            )
+                                    );
 
                                     child.setElevation(
                                             6f
